@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Add Product - Ecommerce",
@@ -11,9 +12,17 @@ async function addProduct(formData: FormData) {
   const imageUrl = formData.get("imageUrl")?.toString();
   const price = Number(formData.get("price" || 0));
 
-  await prisma.product.create({
-    data: {},
+  console.log(formData);
+
+  if (!name || !description || !imageUrl || !price) {
+    throw Error("Boş alan bırakılamaz.");
+  }
+
+  prisma.product.create({
+    data: { name, description, imageUrl, price },
   });
+
+  redirect("/");
 }
 
 const AddProduct = () => {
